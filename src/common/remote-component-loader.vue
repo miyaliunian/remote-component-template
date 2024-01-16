@@ -9,7 +9,7 @@
 
 <script>
 import Vue from 'vue';
-
+import {scriptLoad} from './scriptLoad'
 export default {
   name: 'remote-component-loader',
   props: {
@@ -20,24 +20,14 @@ export default {
       component: '',
     }
   },
-  created() {
+   async created() {
     const {
       name,
-      js,
-      css,
     } = this.config;
     const component = window[name];
     if (!component) {
-      const script = document.createElement('script');
-      const link = document.createElement('link');
-      script.src = js;
-      link.href = css;
-      link.rel= 'stylesheet';
-      document.head.appendChild(link);
-      document.body.appendChild(script);
-      script.onload = () => {
+        await scriptLoad(this.config)
         this.component = Vue.extend(window[name].Component);
-      }
     } else  {
       this.$nextTick(() => {
         this.component = Vue.extend(window[name].Component);
