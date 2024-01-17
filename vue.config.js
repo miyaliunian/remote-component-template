@@ -1,3 +1,11 @@
+/*
+ * @Author: 米亚流年 miyaliunian@gmail.com
+ * @Date: 2024-01-12 13:10:39
+ * @LastEditors: 米亚流年 miyaliunian@gmail.com
+ * @LastEditTime: 2024-01-17 10:56:45
+ * @FilePath: /remote-component-template/vue.config.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 let path = require('path');
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -16,7 +24,16 @@ const cdn = {
 module.exports = {
   lintOnSave: false,
   devServer: {
-    disableHostCheck: true
+    disableHostCheck: true,
+    proxy:{
+      '/api': {
+        target: 'http://120.46.149.139:9091/',
+        changOrigin: true, //开启代理
+        pathRewrite: {
+          '^/api': ''
+        }
+      },
+    }
   },
   publicPath: './',
   css: {

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Remote Component</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <my-component></my-component>
+    </div>
+
+    <script>
+        // HOC
+        function withHOC(WrappedComponent) {
+            return {
+                mounted() {
+                    console.log('HOC mounted');
+                },
+                render(h) {
+                    return h(WrappedComponent);
+                }
+            };
+        }
+
+        // 原始组件
+        const MyComponent = {
+            template: '<div>My Component</div>'
+        };
+
+        // 使用HOC封装组件
+        const WrappedComponent = withHOC(MyComponent);
+
+        new Vue({
+            el: '#app',
+            components: {
+                'my-component': WrappedComponent
+            }
+        });
+    </script>
+</body>
+</html>

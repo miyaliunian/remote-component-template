@@ -1,3 +1,11 @@
+<!--
+ * @Author: 米亚流年 miyaliunian@gmail.com
+ * @Date: 2024-01-13 23:25:45
+ * @LastEditors: 米亚流年 miyaliunian@gmail.com
+ * @LastEditTime: 2024-01-17 10:50:11
+ * @FilePath: /remote-component-template/src/common/remote-component-loader.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <template>
   <component
       v-if="component"
@@ -27,16 +35,18 @@ export default {
     const component = window[name];
     if (!component) {
         await scriptLoad(this.config)
-        this.component = Vue.extend(window[name].Component);
+        this.component = Vue.extend(window[name].default);
+        // this.component = Vue.extend(window[name].Component);
     } else  {
       this.$nextTick(() => {
-        this.component = Vue.extend(window[name].Component);
+        // this.component = Vue.extend(window[name].Component);
+        this.component = Vue.extend(window[name].default);
       });
     }
   },
   watch: {
     'config.name'() {
-      this.component = Vue.extend(window[this.config.name].Component);
+      this.component = Vue.extend(window[this.config.name].default);
     }
   }
 }
