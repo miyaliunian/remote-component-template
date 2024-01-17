@@ -1,12 +1,9 @@
 <template>
-  <div >
-    <div
-      :key="index"
-      v-for="(component, index) in components"
-    >
-    <div>{{ component.config.name }}</div>
-    <!-- <template v-if="component.config.name === 'common-remote-image.0.0.1'">
-       <div
+  <div>
+    <div :key="index" v-for="(component, index) in components">
+      <div>{{ component.config.name }}</div>
+      <!-- <template v-if="component.config.name === 'common-remote-image.0.0.1'">
+        <div
         :is="component.name"
         :key="component + index"
         :config="component.config || {}"
@@ -31,14 +28,17 @@
       :config="component.config || {}"
       />
     </template> -->
-    <div :id="mapId" class="map-div">
-      <div
-      :is="component.name"
-      :mapId="mapId"
-      :key="component + index"
-      :config="component.config || {}"
-      />
-    </div>
+      <div v-if="component.config.name === 'common-remote-map'" :id="mapId" class="map-div">
+        <div :is="component.name" :mapId="mapId" :key="component + index" :config="component.config || {}" />
+      </div>
+      <div v-else-if="component.config.name === 'common-remote-tree'" :id="mapId">
+        <div :is="component.name" title="摄像机列表" :currentSelectFunction="currentSelectFunction" :key="component + index"
+          :config="component.config || {}" />
+      </div>
+      <div v-else-if="component.config.name === 'common-remote-footer'">
+        <div :is="component.name" :key="component + index" :config="component.config || {}" @toCloseArea="toCloseArea"
+          @toOpenArae="toOpenArae" @selectFunction="selectFunction" />
+      </div>
     </div>
   </div>
 </template>
@@ -92,7 +92,31 @@ window.__remote_config__ = {
       props: {
         desc: "远程input组件"
       }
-    },     
+    },
+    {
+      "name": "RemoteComponentsLoader",
+      "config": {
+        "name": "common-remote-tree",
+        "description": "远程摄像机树组件",
+        "js": "http://10.43.34.5:18001/npm/common-remote-tree/index.js",
+        "css": "http://10.43.34.5:18001/npm/common-remote-tree/index.css",
+      },
+      props: {
+        desc: "远程tree组件"
+      }
+    },
+    {
+      "name": "RemoteComponentsLoader",
+      "config": {
+        "name": "common-remote-footer",
+        "description": "远程摄像机树组件",
+        "js": "http://10.43.34.5:18001/npm/common-remote-footer/index.js",
+        "css": "http://10.43.34.5:18001/npm/common-remote-footer/index.css",
+      },
+      props: {
+        desc: "远程footer组件"
+      }
+    },
   ],
 }
 
@@ -103,35 +127,53 @@ export default {
   data() {
     return {
       loaded: false,
-      components:[],
+      components: [],
       remoteComponents: [],
-      value:"",
-      mapId: "mapId"
+      currentSelectFunction: [],
+      value: "",
+      mapId: "mapId",
+
     };
   },
   created() {
     this.loaded = true;
   },
-  mounted(){
+  mounted() {
     // setTimeout(() => {
-      this.components = window.__remote_config__.components
+    this.components = window.__remote_config__.components
     // }, 2000);
   },
   methods: {
+    /**
+  * footer组件抛出方法
+ */
+    toCloseArea(close, currentSelectFunction) {
+      console.log('⭐⭐⭐toCloseArea', close, currentSelectFunction)
+      this.isAllOpen = close
+      this.currentSelectFunction = currentSelectFunction
+    },
+    toOpenArae(open) {
+      console.log('⭐⭐⭐toOpenArae', open)
+      this.isAllOpen = open
+    },
+    selectFunction(selectArray) {
+      console.log('⭐⭐⭐selectFunction', selectArray)
+      this.currentSelectFunction = selectArray
+    }
   },
   components: {
     RemoteComponentsLoader,
   },
-  watch:{
-    value(nVal){
-      console.log("输入框输入的值",nVal)
+  watch: {
+    value(nVal) {
+      console.log("输入框输入的值", nVal)
     }
   }
-  
+
 };
 </script>
 <style>
-.map-div{
+.map-div {
   width: 100vw;
   height: 100vw;
 }
