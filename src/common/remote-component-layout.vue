@@ -1,3 +1,14 @@
+<!--
+ * @Description  : 
+ * @Version      : V1.0.0
+ * @Author       : Maws
+ * @Date         : 2024-01-17 19:12:51
+ * @LastEditors  : Maws
+ * @LastEditTime : 2024-01-17 19:12:52
+ * @FilePath     : remote-component-layout.vue
+ * Copyright 2024 Maws, All Rights Reserved. 
+ * 2024-01-17 19:12:51
+-->
 <template>
   <div>
     <div :key="index" v-for="(component, index) in components">
@@ -28,16 +39,45 @@
       :config="component.config || {}"
       />
     </template> -->
-      <div v-if="component.config.name === 'common-remote-map'" :id="mapId" class="map-div">
-        <div :is="component.name" :mapId="mapId" :key="component + index" :config="component.config || {}" />
+      <div
+        v-if="component.config.name === 'common-remote-map'"
+        :id="mapId"
+        class="map-div"
+      >
+        <div
+          :is="component.name"
+          :mapId="mapId"
+          :key="component + index"
+          :config="component.config || {}"
+          chooseMapMemoryKey="monitorWarnChooseMap"
+          @initMapSuccess="initMapSuccess"
+          @onMapTypeChange="onMapTypeChange"
+          @beforeMapTypeChange="beforeMapTypeChange"
+        />
       </div>
-      <div v-else-if="component.config.name === 'common-remote-tree'" :id="mapId">
-        <div :is="component.name" title="摄像机列表" :currentSelectFunction="currentSelectFunction" :key="component + index"
-          :config="component.config || {}" />
+      <div
+        v-else-if="component.config.name === 'common-remote-tree'"
+        :id="mapId"
+      >
+        <div
+          :is="component.name"
+          title="摄像机列表"
+          :mapObj="mapObj"
+          :mapId="mapId"
+          :currentSelectFunction="currentSelectFunction"
+          :key="component + index"
+          :config="component.config || {}"
+        />
       </div>
       <div v-else-if="component.config.name === 'common-remote-footer'">
-        <div :is="component.name" :key="component + index" :config="component.config || {}" @toCloseArea="toCloseArea"
-          @toOpenArae="toOpenArae" @selectFunction="selectFunction" />
+        <div
+          :is="component.name"
+          :key="component + index"
+          :config="component.config || {}"
+          @toCloseArea="toCloseArea"
+          @toOpenArae="toOpenArae"
+          @selectFunction="selectFunction"
+        />
       </div>
     </div>
   </div>
@@ -68,7 +108,7 @@ window.__remote_config__ = {
     //   props: {
     //     desc: "远程switch组件"
     //   }
-    // },        
+    // },
     // {
     //   "name": "RemoteComponentsLoader",
     //   "config": {
@@ -82,48 +122,49 @@ window.__remote_config__ = {
     //   }
     // },
     {
-      "name": "RemoteComponentsLoader",
-      "config": {
-        "name": "common-remote-map",
-        "description": "远程地图组件",
-        "js": "http://10.43.34.5:18001/npm/common-remote-map/index.js",
-        "css": "http://10.43.34.5:18001/npm/common-remote-map/index.css",
+      name: "RemoteComponentsLoader",
+      config: {
+        name: "common-remote-map",
+        description: "远程地图组件",
+        js: "http://10.43.34.5:18001/npm/common-remote-map/index.js",
+        css: "http://10.43.34.5:18001/npm/common-remote-map/index.css",
       },
       props: {
-        desc: "远程input组件"
-      }
+        desc: "远程input组件",
+      },
     },
     {
-      "name": "RemoteComponentsLoader",
-      "config": {
-        "name": "common-remote-tree",
-        "description": "远程摄像机树组件",
-        "js": "http://10.43.34.5:18001/npm/common-remote-tree/index.js",
-        "css": "http://10.43.34.5:18001/npm/common-remote-tree/index.css",
+      name: "RemoteComponentsLoader",
+      config: {
+        name: "common-remote-tree",
+        description: "远程摄像机树组件",
+        js: "http://10.43.34.5:18001/npm/common-remote-tree/index.js",
+        css: "http://10.43.34.5:18001/npm/common-remote-tree/index.css",
       },
       props: {
-        desc: "远程tree组件"
-      }
+        desc: "远程tree组件",
+      },
     },
     {
-      "name": "RemoteComponentsLoader",
-      "config": {
-        "name": "common-remote-footer",
-        "description": "远程摄像机树组件",
-        "js": "http://10.43.34.5:18001/npm/common-remote-footer/index.js",
-        "css": "http://10.43.34.5:18001/npm/common-remote-footer/index.css",
+      name: "RemoteComponentsLoader",
+      config: {
+        name: "common-remote-footer",
+        description: "远程摄像机树组件",
+        js: "http://10.43.34.5:18001/npm/common-remote-footer/index.js",
+        css: "http://10.43.34.5:18001/npm/common-remote-footer/index.css",
       },
       props: {
-        desc: "远程footer组件"
-      }
+        desc: "远程footer组件",
+      },
+      mapObj: {},
     },
   ],
-}
+};
 
-import RemoteComponentsLoader from './remote-component-loader';
+import RemoteComponentsLoader from "./remote-component-loader";
 
 export default {
-  name: 'remote-component-layout',
+  name: "remote-component-layout",
   data() {
     return {
       loaded: false,
@@ -131,8 +172,9 @@ export default {
       remoteComponents: [],
       currentSelectFunction: [],
       value: "",
-      mapId: "mapId",
-
+      mapId: "monitorWarn-map",
+      map: null,
+      mapInstance: null,
     };
   },
   created() {
@@ -140,36 +182,56 @@ export default {
   },
   mounted() {
     // setTimeout(() => {
-    this.components = window.__remote_config__.components
+    this.components = window.__remote_config__.components;
     // }, 2000);
   },
   methods: {
     /**
-  * footer组件抛出方法
- */
+     * footer组件抛出方法
+     */
     toCloseArea(close, currentSelectFunction) {
-      console.log('⭐⭐⭐toCloseArea', close, currentSelectFunction)
-      this.isAllOpen = close
-      this.currentSelectFunction = currentSelectFunction
+      console.log("⭐⭐⭐toCloseArea", close, currentSelectFunction);
+      this.isAllOpen = close;
+      this.currentSelectFunction = currentSelectFunction;
     },
     toOpenArae(open) {
-      console.log('⭐⭐⭐toOpenArae', open)
-      this.isAllOpen = open
+      console.log("⭐⭐⭐toOpenArae", open);
+      this.isAllOpen = open;
     },
     selectFunction(selectArray) {
-      console.log('⭐⭐⭐selectFunction', selectArray)
-      this.currentSelectFunction = selectArray
-    }
+      console.log("⭐⭐⭐selectFunction", selectArray);
+      this.currentSelectFunction = selectArray;
+    },
+    initMapSuccess(params) {
+      const { map, CTMapType, mapInstance } = params;
+      this.mapLoadingSuccess(map, CTMapType, mapInstance);
+    },
+    onMapTypeChange(params) {
+      const { map, CTMapType, mapInstance } = params;
+      this.mapLoadingSuccess(map, CTMapType, mapInstance);
+    },
+    beforeMapTypeChange() {
+      this.mapReady = false;
+    },
+    /**
+     * 地图加载成功执行
+     */
+    mapLoadingSuccess(map, CTMapType, mapInstance) {
+      this.mapObj = {
+        map: map,
+        mapInstance: mapInstance,
+        mapId: this.mapId,
+      };
+    },
   },
   components: {
     RemoteComponentsLoader,
   },
   watch: {
     value(nVal) {
-      console.log("输入框输入的值", nVal)
-    }
-  }
-
+      console.log("输入框输入的值", nVal);
+    },
+  },
 };
 </script>
 <style>
