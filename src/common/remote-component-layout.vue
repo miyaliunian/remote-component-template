@@ -156,7 +156,6 @@ window.__remote_config__ = {
       props: {
         desc: "远程footer组件",
       },
-      mapObj: {},
     },
   ],
 };
@@ -175,6 +174,7 @@ export default {
       mapId: "monitorWarn-map",
       map: null,
       mapInstance: null,
+      mapObj: {},
     };
   },
   created() {

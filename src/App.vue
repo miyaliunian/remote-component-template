@@ -14,18 +14,22 @@
 
 <script>
 import RemoteComponentsLayout from './common/remote-component-layout';
+import MapRef from './common/MapRef';
 
 export default {
   name: 'App',
   components: {
     RemoteComponentsLayout,
   },
+  provide: {
+    commonMapRef: new MapRef(),
+  },
   mounted() {
     // getCampaignInfo().then(res => {
     //   console.log(res);
     // })
 
-    const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiIl0sInVzZXJfbmFtZSI6IndlYl9tYW5hZ2V8a2hzai1seSIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE3MDU1MDA2OTQsInVzZXJJZCI6ImQyOTlhZDMyOTc3MTQzN2I5YTY3NTU5MDQ5ZTI4NjdlIiwianRpIjoiOWNkNTcyZDYtZjhkZC00ODY5LWE1MTAtYTExNjMyZTgzNDk3IiwiY2xpZW50X2lkIjoid2ViX21hbmFnZSJ9.fM_Wn6yGZJyLOZFaB9CuwULFIuzRVOO8vQJh3KsG8byGq_tpwF6jNfT1rAEvq-a8Busrb2747rh9CMNCcLoKV5PUUVDmYPGdgOb2qsUHyQ5_wYKmoOZeLHJTdrnN1GBlK6FJsitxvXzlvITc098rKJLMKolHLz_tA1h2dXLTbJaspLKF5sfYgJPUs77KSb0MdbVD_h-DCLVlbIz6qt5eIorW2krfuDF4oVt61HHRrkHksqAA9sdmNAvNDdFbjZSh6ezyEJkJpWA8po34-QD1lSgmwQzKwSQuGAvBl9Axya48a-abU5GxuqEUopv1QiqYZvxvuR8Gwrr-Z_6q7mMk4w"  
+    const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiIl0sInVzZXJfbmFtZSI6IndlYl9tYW5hZ2V8a2hzai1seSIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE3MDU1ODMzOTYsInVzZXJJZCI6ImQyOTlhZDMyOTc3MTQzN2I5YTY3NTU5MDQ5ZTI4NjdlIiwianRpIjoiMGRmYmY0NjQtNmE3YS00MjQwLTg4NWUtYTA1NWQzMmE4YjU5IiwiY2xpZW50X2lkIjoid2ViX21hbmFnZSJ9.nB0YC7idCW1fjmLqAsTk4iKtYTF6DSGWYQ3WCIFHKLxT51leKF-rICUo3t8N7PSTYZ2XPvmiqjaBdMnkzTIpqzOo5yysQBJuK_NaQXWhve41LqjaUsnnzIreu-hVGWTbfSUwlFLTJlFf98Ti7wgJ1e_F7-Jn-LwuEOPMn3WIYQwvzEKt9hhwkdZ2VfaGLUs50T8aVdyOSuglQG9KzJsPibfkJ5wSgaqYiP1vDf6Bm2HGmPCdFa3efoOTsWIV5Iv_vbhld6a6m8Mj5xO4eQX3WfyOR2IPL-CjfnS3uH25vr6BwiBl4_NirZZ1SckhkDJuPvl9LMIgBPJmwl9sYKGiZQ"  
     sessionStorage.setItem('Admin-Token', token)
   }
 }
